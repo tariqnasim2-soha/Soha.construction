@@ -1,85 +1,75 @@
+/*==================================
+ SOHA CONSTRUCTION
+ script.js - Part 1
+==================================*/
 
-const loader=document.querySelector(".loader");
-const menuBtn=document.querySelector(".menu-btn");
-const navbar=document.querySelector(".navbar");
-const header=document.querySelector(".header");
-const scrollTop=document.querySelector(".scroll-top");
-const navLinks=document.querySelectorAll(".navbar a");
+/* ===== PRELOADER ===== */
 
-window.addEventListener("load",()=>{
+window.addEventListener("load", () => {
 
-setTimeout(()=>{
+const loader = document.querySelector(".loader");
 
-loader.style.opacity="0";
-loader.style.visibility="hidden";
+setTimeout(() => {
 
-},1200);
+loader.classList.add("hide");
+
+setTimeout(() => {
+
+loader.style.display = "none";
+
+},600);
+
+},1000);
 
 });
 
-menuBtn.addEventListener("click",()=>{
 
-navbar.classList.toggle("active");
+/* ===== STICKY HEADER ===== */
 
-if(menuBtn.innerHTML.includes("bars")){
+const header = document.querySelector(".header");
 
-menuBtn.innerHTML='<i class="fa-solid fa-xmark"></i>';
+window.addEventListener("scroll", () => {
+
+if(window.scrollY > 80){
+
+header.classList.add("scrolled");
 
 }else{
 
-menuBtn.innerHTML='<i class="fa-solid fa-bars"></i>';
+header.classList.remove("scrolled");
 
 }
 
 });
 
-navLinks.forEach(link=>{
+
+/* ===== MOBILE MENU ===== */
+
+const menuBtn = document.querySelector(".menu-btn");
+
+const mobileMenu = document.querySelector(".mobile-menu");
+
+menuBtn.addEventListener("click", () => {
+
+mobileMenu.classList.toggle("active");
+
+});
+
+
+/* ===== CLOSE MENU AFTER CLICK ===== */
+
+document.querySelectorAll(".mobile-menu a").forEach(link=>{
 
 link.addEventListener("click",()=>{
 
-navbar.classList.remove("active");
-
-menuBtn.innerHTML='<i class="fa-solid fa-bars"></i>';
+mobileMenu.classList.remove("active");
 
 });
 
 });
 
-window.addEventListener("scroll",()=>{
 
-if(window.scrollY>80){
-
-header.classList.add("sticky");
-
-}else{
-
-header.classList.remove("sticky");
-
-}
-
-if(window.scrollY>400){
-
-scrollTop.classList.add("show");
-
-}else{
-
-scrollTop.classList.remove("show");
-
-}
-
-});
-
-scrollTop.addEventListener("click",()=>{
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
-
-});
-
-});
+/* ===== SMOOTH SCROLL ===== */
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
 
@@ -95,7 +85,6 @@ target.scrollIntoView({
 
 behavior:"smooth"
 
-
 });
 
 }
@@ -103,35 +92,38 @@ behavior:"smooth"
 });
 
 });
-const counters=document.querySelectorAll(".counter");
+/*==================================
+ SOHA CONSTRUCTION
+ script.js - Part 2
+==================================*/
 
-const counterObserver=new IntersectionObserver(entries=>{
+/* ===== COUNTER ANIMATION ===== */
 
-entries.forEach(entry=>{
+const counters = document.querySelectorAll(".counter");
 
-if(entry.isIntersecting){
+const startCounter = () => {
 
-const counter=entry.target;
+counters.forEach(counter => {
 
-const target=+counter.dataset.target;
+const target = +counter.dataset.target;
 
-let count=0;
+let count = 0;
 
-const speed=target/120;
+const speed = target / 100;
 
-const update=()=>{
+const update = () => {
 
-count+=speed;
+count += speed;
 
-if(count<target){
+if(count < target){
 
-counter.innerText=Math.floor(count);
+counter.innerText = Math.ceil(count);
 
 requestAnimationFrame(update);
 
 }else{
 
-counter.innerText=target+"+";
+counter.innerText = target + "+";
 
 }
 
@@ -139,45 +131,89 @@ counter.innerText=target+"+";
 
 update();
 
-counterObserver.unobserve(counter);
+});
+
+};
+
+let counterStarted = false;
+
+window.addEventListener("scroll", () => {
+
+const counterSection = document.querySelector(".counter-section");
+
+if(!counterSection) return;
+
+const top = counterSection.offsetTop - 500;
+
+if(window.scrollY > top && !counterStarted){
+
+counterStarted = true;
+
+startCounter();
 
 }
 
 });
 
-},{threshold:.5});
 
-counters.forEach(counter=>{
+/* ===== SCROLL TO TOP ===== */
 
-counterObserver.observe(counter);
+const scrollBtn = document.querySelector(".scroll-top");
 
-});
+window.addEventListener("scroll", () => {
 
-const sections=document.querySelectorAll("section");
+if(window.scrollY > 300){
 
-window.addEventListener("scroll",()=>{
+scrollBtn.classList.add("show");
 
-let current="";
+}else{
 
-sections.forEach(section=>{
-
-const sectionTop=section.offsetTop-180;
-
-const sectionHeight=section.clientHeight;
-
-if(pageYOffset>=sectionTop){
-
-current=section.getAttribute("id");
+scrollBtn.classList.remove("show");
 
 }
 
 });
 
-navLinks.forEach(link=>{
+scrollBtn.addEventListener("click", () => {
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+});
+
+
+/* ===== ACTIVE NAVIGATION ===== */
+
+const sections = document.querySelectorAll("section");
+
+const navLinks = document.querySelectorAll(".navbar a, .mobile-menu a");
+
+window.addEventListener("scroll", () => {
+
+let current = "";
+
+sections.forEach(section => {
+
+const sectionTop = section.offsetTop - 120;
+
+if(window.scrollY >= sectionTop){
+
+current = section.getAttribute("id");
+
+}
+
+});
+
+navLinks.forEach(link => {
 
 link.classList.remove("active");
 
-if(link.getAttribute("href")==="#"+current){
+if(link.getAttribute("href") === "#" + current){
 
 link.classList.add("active");
 
@@ -186,128 +222,121 @@ link.classList.add("active");
 });
 
 });
+/*==================================
+ SOHA CONSTRUCTION
+ script.js - Part 3
+==================================*/
 
-const revealElements=document.querySelectorAll(".service-card,.why-card,.process-card,.gallery-item,.testimonial-card,.form-box,.counter-box,.feature");
+/* ===== SCROLL REVEAL ===== */
 
-const revealObserver=new IntersectionObserver(entries=>{
+const revealItems = document.querySelectorAll(
 
-entries.forEach(entry=>{
+".service-card,.project-card,.gallery-item,.why-card,.process-card,.achievement-card,.testimonial-card,.contact-card,.about-content,.about-image"
 
-if(entry.isIntersecting){
+);
 
-entry.target.classList.add("show");
+function revealOnScroll(){
+
+const trigger = window.innerHeight * 0.85;
+
+revealItems.forEach(item=>{
+
+const top = item.getBoundingClientRect().top;
+
+if(top < trigger){
+
+item.style.opacity="1";
+
+item.style.transform="translateY(0)";
 
 }
 
 });
 
-},{threshold:.15});
+}
 
-revealElements.forEach(item=>{
+revealItems.forEach(item=>{
 
-revealObserver.observe(item);
-  
-const heroTitles=[
-"Building Strength",
-"Premium RCC Products",
-"Trusted Construction Partner",
-"Quality That Lasts"
-];
+item.style.opacity="0";
 
-const heroHeading=document.querySelector(".hero h2");
+item.style.transform="translateY(40px)";
 
-let heroIndex=0;
+item.style.transition="all .8s ease";
+
+});
+
+window.addEventListener("scroll",revealOnScroll);
+
+window.addEventListener("load",revealOnScroll);
+
+
+/* ===== GALLERY HOVER EFFECT ===== */
+
+document.querySelectorAll(".gallery-item").forEach(item=>{
+
+item.addEventListener("mouseenter",()=>{
+
+item.style.transform="scale(1.03)";
+
+});
+
+item.addEventListener("mouseleave",()=>{
+
+item.style.transform="scale(1)";
+
+});
+
+});
+
+
+/* ===== FLOATING BUTTON EFFECT ===== */
+
+const floatingBtns=document.querySelectorAll(
+
+".floating-call,.floating-whatsapp"
+
+);
+
+floatingBtns.forEach(btn=>{
 
 setInterval(()=>{
 
-if(heroHeading){
+btn.animate(
 
-heroIndex++;
+[
 
-if(heroIndex>=heroTitles.length){
+{transform:"translateY(0)"},
 
-heroIndex=0;
+{transform:"translateY(-8px)"},
 
-}
+{transform:"translateY(0)"}
 
-heroHeading.style.opacity="0";
+],
 
-setTimeout(()=>{
+{
 
-heroHeading.innerHTML=heroTitles[heroIndex];
-
-heroHeading.style.opacity="1";
-
-},300);
+duration:1200
 
 }
 
-},3500);
+);
 
-window.addEventListener("scroll",()=>{
-
-document.querySelectorAll(".show").forEach((el,index)=>{
-
-el.style.transition="all .8s ease";
-
-el.style.transitionDelay=`${index*0.08}s`;
-
-el.style.opacity="1";
-
-el.style.transform="translateY(0)";
+},3000);
 
 });
 
-});
 
-document.querySelectorAll(".service-card,.why-card,.process-card,.gallery-item,.testimonial-card,.form-box,.counter-box,.feature").forEach(el=>{
+/* ===== CURRENT YEAR ===== */
 
-el.style.opacity="0";
+const year=document.querySelector(".current-year");
 
-el.style.transform="translateY(60px)";
+if(year){
 
-});
+year.textContent=new Date().getFullYear();
 
-document.querySelectorAll(".gallery-item img").forEach(img=>{
+}
 
-img.addEventListener("click",()=>{
 
-const popup=document.createElement("div");
-
-popup.style.position="fixed";
-popup.style.top="0";
-popup.style.left="0";
-popup.style.width="100%";
-popup.style.height="100%";
-popup.style.background="rgba(0,0,0,.92)";
-popup.style.display="flex";
-popup.style.alignItems="center";
-popup.style.justifyContent="center";
-popup.style.zIndex="99999";
-popup.style.cursor="zoom-out";
-
-const image=document.createElement("img");
-
-image.src=img.src;
-image.style.maxWidth="92%";
-image.style.maxHeight="92%";
-image.style.borderRadius="15px";
-image.style.boxShadow="0 20px 60px rgba(0,0,0,.6)";
-
-popup.appendChild(image);
-
-document.body.appendChild(popup);
-
-popup.addEventListener("click",()=>{
-
-popup.remove();
-
-});
-
-});
-
-});
+/* ===== END OF SCRIPT ===== */
 
 console.log("SOHA Construction Website Loaded Successfully");
-
-});
