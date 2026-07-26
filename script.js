@@ -1,75 +1,129 @@
-/*==================================
- SOHA CONSTRUCTION
- script.js - Part 1
-==================================*/
+//==============================
+// SOHA Construction Script.js
+// Part 1
+//==============================
 
-/* ===== PRELOADER ===== */
+// Loader
 
-window.addEventListener("load", () => {
+window.addEventListener("load",()=>{
 
-const loader = document.querySelector(".loader");
+const loader=document.querySelector(".loader");
 
-setTimeout(() => {
+setTimeout(()=>{
 
-loader.classList.add("hide");
+loader.style.opacity="0";
+loader.style.visibility="hidden";
 
-setTimeout(() => {
-
-loader.style.display = "none";
-
-},600);
-
-},1000);
+},800);
 
 });
 
+// Mobile Menu
 
-/* ===== STICKY HEADER ===== */
+const menuBtn=document.querySelector(".menu-btn");
 
-const header = document.querySelector(".header");
+const mobileMenu=document.querySelector(".mobile-menu");
 
-window.addEventListener("scroll", () => {
+if(menuBtn && mobileMenu){
 
-if(window.scrollY > 80){
-
-header.classList.add("scrolled");
-
-}else{
-
-header.classList.remove("scrolled");
-
-}
-
-});
-
-
-/* ===== MOBILE MENU ===== */
-
-const menuBtn = document.querySelector(".menu-btn");
-
-const mobileMenu = document.querySelector(".mobile-menu");
-
-menuBtn.addEventListener("click", () => {
+menuBtn.addEventListener("click",()=>{
 
 mobileMenu.classList.toggle("active");
 
 });
 
+}
 
-/* ===== CLOSE MENU AFTER CLICK ===== */
+// Sticky Header
 
-document.querySelectorAll(".mobile-menu a").forEach(link=>{
+const header=document.querySelector(".header");
 
-link.addEventListener("click",()=>{
+window.addEventListener("scroll",()=>{
 
-mobileMenu.classList.remove("active");
+if(window.scrollY>50){
+
+header.classList.add("sticky");
+
+}else{
+
+header.classList.remove("sticky");
+
+}
+
+});
+
+// Active Navigation
+
+const sections=document.querySelectorAll("section");
+
+const navLinks=document.querySelectorAll(".navbar ul li a");
+
+window.addEventListener("scroll",()=>{
+
+let current="";
+
+sections.forEach(section=>{
+
+const sectionTop=section.offsetTop-120;
+
+const sectionHeight=section.clientHeight;
+
+if(pageYOffset>=sectionTop){
+
+current=section.getAttribute("id");
+
+}
+
+});
+
+navLinks.forEach(link=>{
+
+link.classList.remove("active");
+
+if(link.getAttribute("href")==="#"+current){
+
+link.classList.add("active");
+
+}
+
+});
+
+});
+//==============================
+// Script.js Part 2
+//==============================
+
+// Scroll To Top
+
+const scrollTopBtn=document.querySelector(".scroll-top");
+
+window.addEventListener("scroll",()=>{
+
+if(window.scrollY>300){
+
+scrollTopBtn.classList.add("show");
+
+}else{
+
+scrollTopBtn.classList.remove("show");
+
+}
+
+});
+
+scrollTopBtn.addEventListener("click",()=>{
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
 
 });
 
 });
 
-
-/* ===== SMOOTH SCROLL ===== */
+// Smooth Scroll
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
 
@@ -89,41 +143,78 @@ behavior:"smooth"
 
 }
 
-});
+if(mobileMenu){
+
+mobileMenu.classList.remove("active");
+
+}
 
 });
-/*==================================
- SOHA CONSTRUCTION
- script.js - Part 2
-==================================*/
 
-/* ===== COUNTER ANIMATION ===== */
+});
 
-const counters = document.querySelectorAll(".counter");
+// Reveal Animation
 
-const startCounter = () => {
+const reveals=document.querySelectorAll(
 
-counters.forEach(counter => {
+".service-card,.project-card,.gallery-item,.why-card,.testimonial-card,.contact-card"
 
-const target = +counter.dataset.target;
+);
 
-let count = 0;
+function revealElements(){
 
-const speed = target / 100;
+const trigger=window.innerHeight-120;
 
-const update = () => {
+reveals.forEach(item=>{
 
-count += speed;
+const top=item.getBoundingClientRect().top;
 
-if(count < target){
+if(top<trigger){
 
-counter.innerText = Math.ceil(count);
+item.classList.add("show");
+
+}
+
+});
+
+}
+
+window.addEventListener("scroll",revealElements);
+
+window.addEventListener("load",revealElements);
+//==============================
+// Script.js Part 3 (Final)
+//==============================
+
+// Counter Animation
+
+const counters=document.querySelectorAll(".counter-card h2");
+
+const startCounter=()=>{
+
+counters.forEach(counter=>{
+
+const target=parseInt(counter.innerText);
+
+let count=0;
+
+const speed=Math.max(10,Math.floor(target/100));
+
+const update=()=>{
+
+if(count<target){
+
+count+=speed;
+
+if(count>target) count=target;
+
+counter.innerText=count+"+";
 
 requestAnimationFrame(update);
 
 }else{
 
-counter.innerText = target + "+";
+counter.innerText=target+"+";
 
 }
 
@@ -135,208 +226,34 @@ update();
 
 };
 
-let counterStarted = false;
+const counterSection=document.querySelector(".counter-section");
 
-window.addEventListener("scroll", () => {
+if(counterSection){
 
-const counterSection = document.querySelector(".counter-section");
+const observer=new IntersectionObserver(entries=>{
 
-if(!counterSection) return;
-
-const top = counterSection.offsetTop - 500;
-
-if(window.scrollY > top && !counterStarted){
-
-counterStarted = true;
+if(entries[0].isIntersecting){
 
 startCounter();
 
-}
-
-});
-
-
-/* ===== SCROLL TO TOP ===== */
-
-const scrollBtn = document.querySelector(".scroll-top");
-
-window.addEventListener("scroll", () => {
-
-if(window.scrollY > 300){
-
-scrollBtn.classList.add("show");
-
-}else{
-
-scrollBtn.classList.remove("show");
+observer.disconnect();
 
 }
 
 });
 
-scrollBtn.addEventListener("click", () => {
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
-
-});
-
-});
-
-
-/* ===== ACTIVE NAVIGATION ===== */
-
-const sections = document.querySelectorAll("section");
-
-const navLinks = document.querySelectorAll(".navbar a, .mobile-menu a");
-
-window.addEventListener("scroll", () => {
-
-let current = "";
-
-sections.forEach(section => {
-
-const sectionTop = section.offsetTop - 120;
-
-if(window.scrollY >= sectionTop){
-
-current = section.getAttribute("id");
+observer.observe(counterSection);
 
 }
 
-});
+// Footer Year
 
-navLinks.forEach(link => {
+const copyright=document.querySelector(".copyright p");
 
-link.classList.remove("active");
+if(copyright){
 
-if(link.getAttribute("href") === "#" + current){
-
-link.classList.add("active");
+copyright.innerHTML="© "+new Date().getFullYear()+" SOHA Construction. All Rights Reserved.";
 
 }
 
-});
-
-});
-/*==================================
- SOHA CONSTRUCTION
- script.js - Part 3
-==================================*/
-
-/* ===== SCROLL REVEAL ===== */
-
-const revealItems = document.querySelectorAll(
-
-".service-card,.project-card,.gallery-item,.why-card,.process-card,.achievement-card,.testimonial-card,.contact-card,.about-content,.about-image"
-
-);
-
-function revealOnScroll(){
-
-const trigger = window.innerHeight * 0.85;
-
-revealItems.forEach(item=>{
-
-const top = item.getBoundingClientRect().top;
-
-if(top < trigger){
-
-item.style.opacity="1";
-
-item.style.transform="translateY(0)";
-
-}
-
-});
-
-}
-
-revealItems.forEach(item=>{
-
-item.style.opacity="0";
-
-item.style.transform="translateY(40px)";
-
-item.style.transition="all .8s ease";
-
-});
-
-window.addEventListener("scroll",revealOnScroll);
-
-window.addEventListener("load",revealOnScroll);
-
-
-/* ===== GALLERY HOVER EFFECT ===== */
-
-document.querySelectorAll(".gallery-item").forEach(item=>{
-
-item.addEventListener("mouseenter",()=>{
-
-item.style.transform="scale(1.03)";
-
-});
-
-item.addEventListener("mouseleave",()=>{
-
-item.style.transform="scale(1)";
-
-});
-
-});
-
-
-/* ===== FLOATING BUTTON EFFECT ===== */
-
-const floatingBtns=document.querySelectorAll(
-
-".floating-call,.floating-whatsapp"
-
-);
-
-floatingBtns.forEach(btn=>{
-
-setInterval(()=>{
-
-btn.animate(
-
-[
-
-{transform:"translateY(0)"},
-
-{transform:"translateY(-8px)"},
-
-{transform:"translateY(0)"}
-
-],
-
-{
-
-duration:1200
-
-}
-
-);
-
-},3000);
-
-});
-
-
-/* ===== CURRENT YEAR ===== */
-
-const year=document.querySelector(".current-year");
-
-if(year){
-
-year.textContent=new Date().getFullYear();
-
-}
-
-
-/* ===== END OF SCRIPT ===== */
-
-console.log("SOHA Construction Website Loaded Successfully");
+console.log("SOHA Construction Website Loaded Successfully.");
